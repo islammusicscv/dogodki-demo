@@ -1,0 +1,50 @@
+# Dogodki API — zahteve za BE sklop 1 (request lifecycle)
+# VS Code: razširitev "REST Client" → klik na "Send Request" nad zahtevo.
+# JetBrains: vgrajen HTTP Client. Bruno/Postman: uvozi ročno.
+
+@base = http://localhost:3000
+
+### Ali aplikacija teče?
+GET {{base}}/health
+
+### Vsi dogodki (urejeni po datumu)
+GET {{base}}/events
+
+### Dogodki na enem prizorišču (query parameter)
+GET {{base}}/events?venue=Cankarjev%20dom,%20Ljubljana
+
+### En dogodek (path parameter)
+GET {{base}}/events/3
+
+### Neobstoječ dogodek → 404
+GET {{base}}/events/999
+
+### Nov dogodek → 201
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Večer poezije",
+  "venue": "Knjižnica Otona Župančiča, Ljubljana",
+  "startsAt": "2027-04-10T17:00:00.000Z",
+  "capacity": 80,
+  "ticketPriceCents": 0
+}
+
+### Delna posodobitev → 200 (spremeni samo podana polja)
+PATCH {{base}}/events/9
+Content-Type: application/json
+
+{ "capacity": 100 }
+
+### Brisanje → 200
+DELETE {{base}}/events/9
+
+### Vstopnice enega dogodka (gnezdena pot)
+GET {{base}}/events/1/tickets
+
+### Ena vstopnica
+GET {{base}}/tickets/2
+
+### Metoda, ki ne obstaja → 404 "Cannot PUT /events/1"
+PUT {{base}}/events/1
