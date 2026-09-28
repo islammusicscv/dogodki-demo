@@ -1,0 +1,129 @@
+# Dogodki API — zahteve za BE sklop 2 (validacija vhoda: DTO, class-validator, pipes)
+# Vse zahteve z napačnim vhodom vrnejo 400, še preden koda pride do servisa.
+
+@base = http://localhost:3000
+
+### ParseIntPipe: id ni število → 400 "numeric string is expected"
+GET {{base}}/events/abc
+
+### Veljaven nov dogodek → 201
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Večer poezije",
+  "venue": "Knjižnica Otona Župančiča, Ljubljana",
+  "startsAt": "2030-04-10T17:00:00.000Z",
+  "capacity": 80,
+  "ticketPriceCents": 0
+}
+
+### Prazno telo → 400 s seznamom vseh napak
+POST {{base}}/events
+Content-Type: application/json
+
+{}
+
+### Custom validator @IsInFuture: datum v preteklosti → 400
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Včerajšnji koncert",
+  "venue": "Kino Šiška, Ljubljana",
+  "startsAt": "2020-01-01T20:00:00.000Z",
+  "capacity": 100,
+  "ticketPriceCents": 1500
+}
+
+### @IsInt: capacity ni celo število → 400
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Pol sedeža",
+  "venue": "Kino Šiška, Ljubljana",
+  "startsAt": "2030-05-01T20:00:00.000Z",
+  "capacity": 10.5,
+  "ticketPriceCents": 1500
+}
+
+### @IsInt: capacity kot niz "10" → 400 (JSON telo se ne pretvarja samo)
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Niz namesto števila",
+  "venue": "Kino Šiška, Ljubljana",
+  "startsAt": "2030-05-01T20:00:00.000Z",
+  "capacity": "10",
+  "ticketPriceCents": 1500
+}
+
+### forbidNonWhitelisted: polje, ki ga ni v DTO → 400 "property id should not exist"
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Prepiši prvi dogodek",
+  "venue": "Kino Šiška, Ljubljana",
+  "startsAt": "2030-05-01T20:00:00.000Z",
+  "capacity": 100,
+  "ticketPriceCents": 1500
+}
+
+### UpdateEventDto (PartialType): eno polje → 200
+PATCH {{base}}/events/2
+Content-Type: application/json
+
+{ "capacity": 120 }
+
+### UpdateEventDto: podano polje se še vedno preveri → 400
+PATCH {{base}}/events/2
+Content-Type: application/json
+
+{ "capacity": 0 }
+
+### Nakup vstopnic → 201, totalCents izračuna strežnik
+POST {{base}}/events/1/tickets
+Content-Type: application/json
+
+{ "quantity": 2 }
+
+### Odjemalec poskusi poslati ceno → 400 "property totalCents should not exist"
+POST {{base}}/events/1/tickets
+Content-Type: application/json
+
+{ "quantity": 2, "totalCents": 1 }
+
+### quantity izven meja (1–10) → 400
+POST {{base}}/events/1/tickets
+Content-Type: application/json
+
+{ "quantity": 11 }
+
+### Neobstoječ dogodek → 404
+POST {{base}}/events/999/tickets
+Content-Type: application/json
+
+{ "quantity": 1 }
+
+### Razprodano → 409 Conflict (1/2): majhen dogodek s capacity 2
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Hišni koncert",
+  "venue": "Dnevna soba, Maribor",
+  "startsAt": "2030-06-01T19:00:00.000Z",
+  "capacity": 2,
+  "ticketPriceCents": 1000
+}
+
+### Razprodano → 409 Conflict (2/2): 3 vstopnice za dogodek zgoraj
+# Zamenjaj 10 z id-jem iz odgovora prejšnje zahteve.
+POST {{base}}/events/10/tickets
+Content-Type: application/json
+
+{ "quantity": 3 }

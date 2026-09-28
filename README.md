@@ -16,11 +16,15 @@ npm install
 npm run start
 ```
 
-Vsak teden, ko je objavljen nov sklop: `git pull`, nato `npm install` in `npm run start`.
+Ko je objavljen nov sklop: `git pull`, nato `npm install` in `npm run start`.
 Stanje določenega sklopa (npr. za zagovor): `git checkout be-s3`.
 
 Aplikacija teče na `http://localhost:3000`. Ob prvem zagonu se baza `dogodki.db` napolni iz `seed.json`.
-Za svež začetek izbriši `dogodki.db` in aplikacijo zaženi znova.
+Za svež začetek: `npm run reset` (izbriše `dogodki.db`), nato `npm run start`.
+
+Datumi v `seed.json` so relativni (npr. `"startsInDays": 45, "time": "19:00"`): ob ustvarjanju baze se izračunajo
+od današnjega dne, zato so dogodki vedno v prihodnosti in so pri vsakem drugačni. `SEED_DATE=2026-10-01` izhodišče zamrzne
+(uporabljajo ga preizkusi in posnetki za predavanja).
 
 Windows (PowerShell): če `npm` javi napako o izvajanju skript, enkrat poženi
 `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` ali uporabljaj `npm.cmd`.
@@ -38,6 +42,7 @@ curl -i http://localhost:3000/events
 | Tag | Kaj doda |
 |---|---|
 | `be-s1` | moduli, controllerji, servisi, repository; CRUD `/events`, vstopnice (branje), gnezdena pot, query parameter |
+| `be-s2` | DTO-ji, class-validator, globalni `ValidationPipe`, `ParseIntPipe`, custom validator `@IsInFuture`, nakup vstopnic (cena na strežniku, 409 ob razprodaji) |
 
 ## Struktura
 
@@ -45,8 +50,9 @@ curl -i http://localhost:3000/events
 src/
 ├── main.ts              # zagon aplikacije
 ├── app.module.ts        # korenski modul: baza + moduli
-├── events/              # dogodki: entity, controller, service, module
-├── tickets/             # vstopnice: entity, controller, service, module
+├── common/validators/   # custom validatorji (@IsInFuture)
+├── events/              # dogodki: entity, dto/, controller, service, module
+├── tickets/             # vstopnice: entity, dto/, controller, service, module
 ├── health/              # GET /health
 └── seed/                # polnjenje baze iz seed.json
 ```

@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ticket } from './ticket.entity';
 import { EventsService } from '../events/events.service';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 
 @Injectable()
 export class TicketsService {
@@ -20,5 +21,22 @@ export class TicketsService {
     const ticket = await this.repo.findOneBy({ id });
     if (!ticket) throw new NotFoundException(`Ticket ${id} not found`);
     return ticket;
+  }
+
+  async purchase(eventId: number, dto: CreateTicketDto) {
+    const event = await this.eventsService.findOne(eventId); // 404 if missing
+    const sold = await this.repo.sum('quantity', { eventId }) ?? 0;
+    if (sold + dto.quantity > event.capacity) {
+      throw new ConflictException(`Not enough seats for event ${eventId}`);
+    }
+    // The price comes from the database, never from the client.
+    return this.repo.save(
+      this.repo.create({
+        eventId,
+        quantity: dto.quantity,
+        totalCents: dto.quantity * event.ticketPriceCents,
+        createdAt: new Date().toISOString(),
+      }),
+    );
   }
 }

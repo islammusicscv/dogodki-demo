@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './event.entity';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventsService {
@@ -20,13 +22,13 @@ export class EventsService {
     return event;
   }
 
-  create(data: Partial<Event>) {
-    return this.repo.save(this.repo.create(data));
+  create(dto: CreateEventDto) {
+    return this.repo.save(this.repo.create(dto));
   }
 
-  async update(id: number, data: Partial<Event>) {
+  async update(id: number, dto: UpdateEventDto) {
     const event = await this.findOne(id);
-    return this.repo.save(this.repo.merge(event, data));
+    return this.repo.save(this.repo.merge(event, dto));
   }
 
   async remove(id: number) {

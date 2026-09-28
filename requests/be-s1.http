@@ -26,7 +26,7 @@ Content-Type: application/json
 {
   "title": "Večer poezije",
   "venue": "Knjižnica Otona Župančiča, Ljubljana",
-  "startsAt": "2027-04-10T17:00:00.000Z",
+  "startsAt": "2030-04-10T17:00:00.000Z",
   "capacity": 80,
   "ticketPriceCents": 0
 }

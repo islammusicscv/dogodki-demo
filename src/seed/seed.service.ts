@@ -1,11 +1,12 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { readFileSync } from 'fs';
+import { relativeDate } from './relative-date';
 import { Event } from '../events/event.entity';
 import { Ticket } from '../tickets/ticket.entity';
 
 // Fills an empty database from seed.json on startup.
-// For a fresh start delete dogodki.db and start the app again.
+// For a fresh start: npm run reset (deletes dogodki.db), then start the app again.
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
   constructor(private readonly dataSource: DataSource) {}
@@ -13,7 +14,19 @@ export class SeedService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     if ((await this.dataSource.getRepository(Event).count()) > 0) return;
     const seed = JSON.parse(readFileSync('seed.json', 'utf8'));
-    await this.dataSource.getRepository(Event).insert(seed.events);
-    await this.dataSource.getRepository(Ticket).insert(seed.tickets);
+    const events = seed.events.map(
+      ({ startsInDays, time, ...e }: { id: number; startsInDays: number; time: string }) => ({
+        ...e,
+        startsAt: relativeDate(startsInDays, time),
+      }),
+    );
+    await this.dataSource.getRepository(Event).insert(events);
+    const tickets = seed.tickets.map(
+      ({ boughtDaysAgo, time, ...t }: { boughtDaysAgo: number; time: string }) => ({
+        ...t,
+        createdAt: relativeDate(-boughtDaysAgo, time),
+      }),
+    );
+    await this.dataSource.getRepository(Ticket).insert(tickets);
   }
 }

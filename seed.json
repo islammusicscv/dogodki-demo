@@ -4,7 +4,8 @@
       "id": 1,
       "title": "Jazz večer",
       "venue": "Kino Šiška, Ljubljana",
-      "startsAt": "2026-11-12T18:00:00.000Z",
+      "startsInDays": 45,
+      "time": "19:00",
       "capacity": 300,
       "ticketPriceCents": 1800
     },
@@ -12,7 +13,8 @@
       "id": 2,
       "title": "Hackathon RSR",
       "venue": "Šolski center, Ljubljana",
-      "startsAt": "2026-11-20T08:00:00.000Z",
+      "startsInDays": 53,
+      "time": "09:00",
       "capacity": 60,
       "ticketPriceCents": 0
     },
@@ -20,7 +22,8 @@
       "id": 3,
       "title": "Stand-up večer",
       "venue": "Cankarjev dom, Ljubljana",
-      "startsAt": "2026-11-28T19:00:00.000Z",
+      "startsInDays": 61,
+      "time": "20:00",
       "capacity": 250,
       "ticketPriceCents": 2200
     },
@@ -28,7 +31,8 @@
       "id": 4,
       "title": "Predavanje: umetna inteligenca v praksi",
       "venue": "Kosovelova dvorana, Ljubljana",
-      "startsAt": "2026-12-03T17:00:00.000Z",
+      "startsInDays": 66,
+      "time": "18:00",
       "capacity": 150,
       "ticketPriceCents": 500
     },
@@ -36,7 +40,8 @@
       "id": 5,
       "title": "Božični koncert",
       "venue": "Cankarjev dom, Ljubljana",
-      "startsAt": "2026-12-18T19:30:00.000Z",
+      "startsInDays": 81,
+      "time": "20:30",
       "capacity": 1400,
       "ticketPriceCents": 3500
     },
@@ -44,7 +49,8 @@
       "id": 6,
       "title": "Festival uličnih plesov",
       "venue": "Lent, Maribor",
-      "startsAt": "2027-01-16T16:00:00.000Z",
+      "startsInDays": 110,
+      "time": "17:00",
       "capacity": 500,
       "ticketPriceCents": 1200
     },
@@ -52,7 +58,8 @@
       "id": 7,
       "title": "Gledališka premiera",
       "venue": "SNG Maribor",
-      "startsAt": "2027-02-05T18:30:00.000Z",
+      "startsInDays": 130,
+      "time": "19:30",
       "capacity": 400,
       "ticketPriceCents": 1900
     },
@@ -60,7 +67,8 @@
       "id": 8,
       "title": "Dobrodelni tek",
       "venue": "Park Tivoli, Ljubljana",
-      "startsAt": "2027-03-14T09:00:00.000Z",
+      "startsInDays": 167,
+      "time": "10:00",
       "capacity": 1000,
       "ticketPriceCents": 1000
     }
@@ -71,56 +79,64 @@
       "eventId": 1,
       "quantity": 2,
       "totalCents": 3600,
-      "createdAt": "2026-10-01T09:12:00.000Z"
+      "boughtDaysAgo": 7,
+      "time": "11:12"
     },
     {
       "id": 2,
       "eventId": 1,
       "quantity": 4,
       "totalCents": 7200,
-      "createdAt": "2026-10-02T14:40:00.000Z"
+      "boughtDaysAgo": 6,
+      "time": "16:40"
     },
     {
       "id": 3,
       "eventId": 1,
       "quantity": 1,
       "totalCents": 1800,
-      "createdAt": "2026-10-03T20:05:00.000Z"
+      "boughtDaysAgo": 5,
+      "time": "22:05"
     },
     {
       "id": 4,
       "eventId": 3,
       "quantity": 2,
       "totalCents": 4400,
-      "createdAt": "2026-10-04T11:30:00.000Z"
+      "boughtDaysAgo": 4,
+      "time": "13:30"
     },
     {
       "id": 5,
       "eventId": 5,
       "quantity": 6,
       "totalCents": 21000,
-      "createdAt": "2026-10-05T08:15:00.000Z"
+      "boughtDaysAgo": 3,
+      "time": "10:15"
     },
     {
       "id": 6,
       "eventId": 5,
       "quantity": 2,
       "totalCents": 7000,
-      "createdAt": "2026-10-05T10:00:00.000Z"
+      "boughtDaysAgo": 3,
+      "time": "12:00"
     },
     {
       "id": 7,
       "eventId": 2,
       "quantity": 1,
       "totalCents": 0,
-      "createdAt": "2026-10-06T12:00:00.000Z"
+      "boughtDaysAgo": 2,
+      "time": "14:00"
     },
     {
       "id": 8,
       "eventId": 7,
       "quantity": 3,
       "totalCents": 5700,
-      "createdAt": "2026-10-07T17:45:00.000Z"
+      "boughtDaysAgo": 1,
+      "time": "19:45"
     }
   ]
 }
