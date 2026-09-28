@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Ticket } from './ticket.entity';
 import { EventsService } from '../events/events.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
+import { generateTicketCode } from './ticket-code';
 
 @Injectable()
 export class TicketsService {
@@ -36,6 +37,7 @@ export class TicketsService {
         quantity: dto.quantity,
         totalCents: dto.quantity * event.ticketPriceCents,
         createdAt: new Date().toISOString(),
+        code: generateTicketCode(),
       }),
     );
   }

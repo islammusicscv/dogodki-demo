@@ -4,15 +4,23 @@ import { Repository } from 'typeorm';
 import { Event } from './event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { FindEventsQueryDto } from './dto/find-events-query.dto';
 
 @Injectable()
 export class EventsService {
   constructor(@InjectRepository(Event) private readonly repo: Repository<Event>) {}
 
-  findAll(venue?: string) {
-    return this.repo.find({
-      where: venue ? { venue } : {},
-      order: { startsAt: 'ASC' },
+  // Returns [events, total]. Without page and limit: all events (as before).
+  findAll(query: FindEventsQueryDto) {
+    const paginated = query.page !== undefined || query.limit !== undefined;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    return this.repo.findAndCount({
+      where: query.venue ? { venue: query.venue } : {},
+      // id as a tie-breaker: pages must be stable when two events start at the same time
+      order: { startsAt: 'ASC', id: 'ASC' },
+      skip: paginated ? (page - 1) * limit : undefined,
+      take: paginated ? limit : undefined,
     });
   }
 

@@ -17,9 +17,11 @@ npm run start
 ```
 
 Ko je objavljen nov sklop: `git pull`, nato `npm install` in `npm run start`.
+Če se aplikacija po `git pull` ne zažene in javlja `Unable to connect to the database` (npr. `NOT NULL constraint failed`),
+je sklop spremenil tabele: poženi `npm run reset` (izbriše `dogodki.db`) in aplikacijo zaženi znova.
 Stanje določenega sklopa (npr. za zagovor): `git checkout be-s3`.
 
-Aplikacija teče na `http://localhost:3000`. Ob prvem zagonu se baza `dogodki.db` napolni iz `seed.json`.
+Aplikacija teče na `http://localhost:3000`, dokumentacija API-ja (od `be-s3`) na `http://localhost:3000/docs`. Ob prvem zagonu se baza `dogodki.db` napolni iz `seed.json`.
 Za svež začetek: `npm run reset` (izbriše `dogodki.db`), nato `npm run start`.
 
 Datumi v `seed.json` so relativni (npr. `"startsInDays": 45, "time": "19:00"`): ob ustvarjanju baze se izračunajo
@@ -43,6 +45,7 @@ curl -i http://localhost:3000/events
 |---|---|
 | `be-s1` | moduli, controllerji, servisi, repository; CRUD `/events`, vstopnice (branje), gnezdena pot, query parameter |
 | `be-s2` | DTO-ji, class-validator, globalni `ValidationPipe`, `ParseIntPipe`, custom validator `@IsInFuture`, nakup vstopnic (cena na strežniku, 409 ob razprodaji) |
+| `be-s3` | serializacija (koda vstopnice vidna samo kupcu), status kode (201, 204), enotna oblika napak, paginacija `GET /events?page=&limit=` z `X-Total-Count`, Swagger na `/docs`. **Pobriši bazo (`npm run reset`)** (nov stolpec). |
 
 ## Struktura
 
@@ -50,7 +53,7 @@ curl -i http://localhost:3000/events
 src/
 ├── main.ts              # zagon aplikacije
 ├── app.module.ts        # korenski modul: baza + moduli
-├── common/validators/   # custom validatorji (@IsInFuture)
+├── common/             # skupno: validators/, filters/ (oblika napak), dto/ (napaka, paginacija)
 ├── events/              # dogodki: entity, dto/, controller, service, module
 ├── tickets/             # vstopnice: entity, dto/, controller, service, module
 ├── health/              # GET /health

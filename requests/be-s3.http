@@ -1,0 +1,65 @@
+# Dogodki API — zahteve za BE sklop 3 (oblika izhoda: serializacija, status kode, enoten odgovor)
+# Dokumentacija API-ja v brskalniku: http://localhost:3000/docs
+# Pozor: ob prehodu z be-s2 izbriši dogodki.db (vstopnice imajo nov stolpec code).
+
+@base = http://localhost:3000
+
+### Vsi dogodki → 200, header X-Total-Count = 8
+GET {{base}}/events
+
+### Paginacija: 2. stran po 3 → 200, 3 dogodki, X-Total-Count je še vedno 8
+GET {{base}}/events?page=2&limit=3
+
+### Paginacija + filter: X-Total-Count šteje samo zadetke filtra
+GET {{base}}/events?venue=Kino%20%C5%A0i%C5%A1ka,%20Ljubljana&page=1&limit=1
+
+### Neveljavna stran → 400 (enotna oblika napake)
+GET {{base}}/events?page=0
+
+### Preveč na stran → 400
+GET {{base}}/events?limit=500
+
+### Nov dogodek → 201 Created, v telesu ustvarjen dogodek
+POST {{base}}/events
+Content-Type: application/json
+
+{
+  "title": "Večer poezije",
+  "venue": "Knjižnica Otona Župančiča, Ljubljana",
+  "startsAt": "2030-04-10T17:00:00.000Z",
+  "capacity": 80,
+  "ticketPriceCents": 0
+}
+
+### Napaka validacije → 400, message je vedno seznam
+POST {{base}}/events
+Content-Type: application/json
+
+{}
+
+### Neobstoječ dogodek → 404, ista oblika kot 400 (message je seznam)
+GET {{base}}/events/999
+
+### Nakup → 201, odgovor VSEBUJE code (vidi ga samo kupec)
+POST {{base}}/events/1/tickets
+Content-Type: application/json
+
+{ "quantity": 2 }
+
+### Vstopnice dogodka → 200, BREZ code
+GET {{base}}/events/1/tickets
+
+### Ena vstopnica → 200, BREZ code
+GET {{base}}/tickets/1
+
+### Brisanje → 204 No Content, prazno telo
+DELETE {{base}}/events/9
+
+### Ponovno brisanje istega → 404
+DELETE {{base}}/events/9
+
+### Pot ne obstaja → 404, tudi ta v enotni obliki
+PUT {{base}}/events/1
+
+### OpenAPI dokument (JSON), iz katerega je narejen /docs
+GET {{base}}/docs-json
